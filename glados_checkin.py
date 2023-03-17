@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-import requests, os, time
+import requests, os, time, json
 
 cookie = os.environ["GLA_COOKIE"]
 robot = os.environ["WECOM_ROBOT"]
@@ -87,10 +87,10 @@ def glados_checkin():
                f'> 签到项目：[GlaDOS]-[checkin]\n' \
                f'> 签到账号：{email}\n' \
                f'> 签到信息：{msg_checkin}\n' \
-               f' - 当前套餐：Edu Plan\n' \
-               f' - 套餐流量：30 GB.\n' \
-               f' - 剩余天数：{float(left_days):.0f}\n' \
-               f' - 已用流量：{float(used_today):.2f} {unit}\n'
+               f'- 当前套餐：Edu Plan\n' \
+               f'- 套餐流量：30 GB.\n' \
+               f'- 剩余天数：{float(left_days):.0f}\n' \
+               f'- 已用流量：{float(used_today):.2f} {unit}\n'
     else:
         info = f'可能是Cookie过期了，请联系管理员处理'
     return info
@@ -106,11 +106,11 @@ def wecom_send(content):
     params = {
         'key': robot
     }
-    data = {
+    data = json.dumps({
         "msgtype": "text",
         "text": content
-    }
-    resp = requests.post(url, params=params, headers=headers, json=data)
+    })
+    resp = requests.post(url, params=params, data=data, headers=headers)
     if resp.status_code == requests.codes.ok:
         resp_data = resp.json()
         errcode = resp_data.get('errcode')
