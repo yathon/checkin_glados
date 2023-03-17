@@ -100,14 +100,21 @@ def wecom_send(content):
     if not robot:
         raise Exception('未指定机器人，无法处理发送请求')
     url = f'https://qyapi.weixin.qq.com/cgi-bin/webhook/send'
+    headers = {
+        'Content-Type': 'application/json'
+    }
     params = {
         'key': robot
     }
     data = json.dumps({
         "msgtype": "text",
-        "text": content
+        "text": {
+            "content": content,
+            "mentioned_list": ["@all"],
+            # "mentioned_mobile_list": ["@all"]
+        }
     })
-    resp = requests.post(url, params=params, data=data)
+    resp = requests.post(url, params=params, headers=headers, json=data)
     if resp.status_code == requests.codes.ok:
         resp_data = resp.json()
         errcode = resp_data.get('errcode')
