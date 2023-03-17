@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
-import time
-import requests
+import requests, os, time
 
 cookie = os.environ["GLA_COOKIE"]
 robot = os.environ["WECOM_ROBOT"]
