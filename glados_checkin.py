@@ -1,5 +1,5 @@
 # -*- coding: UTF-8 -*-
-import requests, os, time, json
+import requests, os, time
 
 cookie = os.environ["GLA_COOKIE"]
 robot = os.environ["WECOM_ROBOT"]
@@ -79,18 +79,19 @@ def glados_checkin():
     if 'message' in resp_checkin.text:
         msg_checkin = resp_checkin.json().get('message')
         if msg_checkin == 'Please Try Tomorrow':
-            print('已经签到成功，无需重复签到')
+            # print('已经签到成功，无需重复签到')
+            pass
         data_status = resp_status.json().get('data', {})
         left_days = data_status.get('leftDays')
         email = data_status.get('email')
-        info = f'> 签到时间：{time.strftime("%Y-%m-%d %H:%M:%S")}\n' \
-               f'> 签到项目：[GlaDOS]-[checkin]\n' \
-               f'> 签到账号：{email}\n' \
-               f'> 签到信息：{msg_checkin}\n' \
-               f'- 当前套餐：Edu Plan\n' \
-               f'- 套餐流量：30 GB.\n' \
-               f'- 剩余天数：{float(left_days):.0f}\n' \
-               f'- 已用流量：{float(used_today):.2f} {unit}\n'
+        info = f'> 时间：{time.strftime("%Y-%m-%d %H:%M:%S")}\n' \
+               f'> 项目：[GlaDOS]-[checkin]\n' \
+               f'> 账号：{email}\n' \
+               f'> 套餐：Edu Plan [Basic]\n' \
+               f'> 流量：30 GB.\n' \
+               f'> 天数：{float(left_days):.0f}\n' \
+               f'> 已用：{float(used_today):.2f} {unit}\n' \
+               f'> 信息：{msg_checkin}\n'
     else:
         info = f'可能是Cookie过期了，请联系管理员处理'
     return info
@@ -106,14 +107,14 @@ def wecom_send(content):
     params = {
         'key': robot
     }
-    data = json.dumps({
+    data = {
         "msgtype": "text",
         "text": {
             "content": content,
             "mentioned_list": ["@all"],
             # "mentioned_mobile_list": ["@all"]
         }
-    })
+    }
     resp = requests.post(url, params=params, headers=headers, json=data)
     if resp.status_code == requests.codes.ok:
         resp_data = resp.json()
@@ -127,7 +128,7 @@ def wecom_send(content):
 
 def main():
     info = glados_checkin()
-    print(info)
+    # print(info)
     wecom_send(info)
 
 
