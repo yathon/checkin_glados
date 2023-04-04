@@ -35,7 +35,8 @@ jobs:
     - name: Checkin
       run: |
         python3 glados_checkin.py 
-      env: 
-        WECOM_ROBOT: ${{ secrets.WECOM_ROBOT }}
-        GLA_COOKIE: ${{ secrets.GLA_COOKIE }}
+      env:
+        COOKIE: ${{ secrets.COOKIE }}
+        ROBOT: ${{ secrets.ROBOT }}
+        ROBOT_KEY: ${{ secrets.ROBOT_KEY }}
     - uses: gautamkrishnar/keepalive-workflow@master # using the workflow with default settings

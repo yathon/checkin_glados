@@ -1,8 +1,12 @@
 # -*- coding: UTF-8 -*-
-import requests, os, time
+import os
+import requests
+import time
+from RobotNotice import notice
 
-cookie = os.environ["GLA_COOKIE"]
-robot = os.environ["WECOM_ROBOT"]
+cookie = os.environ["COOKIE"]
+robot = os.environ["ROBOT"]
+robot_key = os.environ["ROBOT_KEY"]
 
 UNIT = 1024
 UNIT_B = 'B'
@@ -84,7 +88,8 @@ def glados_checkin():
         data_status = resp_status.json().get('data', {})
         left_days = data_status.get('leftDays')
         email = data_status.get('email')
-        info = f'> 时间：{time.strftime("%Y-%m-%d %H:%M:%S")}\n' \
+        info = f'\n' \
+               f'> 时间：{time.strftime("%Y-%m-%d %H:%M:%S")}\n' \
                f'> 项目：[GlaDOS]-[checkin]\n' \
                f'> 账号：{email}\n' \
                f'> 套餐：Edu Plan [Basic]\n' \
@@ -97,39 +102,17 @@ def glados_checkin():
     return info
 
 
-def wecom_send(content):
-    if not robot:
-        raise Exception('未指定机器人，无法处理发送请求')
-    url = f'https://qyapi.weixin.qq.com/cgi-bin/webhook/send'
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    params = {
-        'key': robot
-    }
-    data = {
-        "msgtype": "text",
-        "text": {
-            "content": content,
-            "mentioned_list": ["@all"],
-            # "mentioned_mobile_list": ["@all"]
-        }
-    }
-    resp = requests.post(url, params=params, headers=headers, json=data)
-    if resp.status_code == requests.codes.ok:
-        resp_data = resp.json()
-        errcode = resp_data.get('errcode')
-        errmsg = resp_data.get('errmsg')
-        if errcode == 0 and errmsg == 'ok':
-            return
-        raise Exception(f'[{errcode}]{errmsg}')
-    raise Exception(f'[{resp.status_code}]{resp.reason}')
-
-
 def main():
-    info = glados_checkin()
+    info = 'Unknown Error, please checkin manual'
+    for _ in range(5):
+        try:
+            info = glados_checkin()
+            break
+        except Exception as e:
+            print(e)
+            info = str(e)
     # print(info)
-    wecom_send(info)
+    notice(f'[{robot_key}]{info}', robot)
 
 
 if __name__ == '__main__':
