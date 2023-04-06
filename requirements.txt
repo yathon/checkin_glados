@@ -1,1 +1,2 @@
 requests
+RobotNotice==0.0.2
