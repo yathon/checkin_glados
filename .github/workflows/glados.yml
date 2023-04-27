@@ -36,7 +36,8 @@ jobs:
       run: |
         python3 glados_checkin.py 
       env:
-        COOKIE: ${{ secrets.COOKIE }}
+        COOKIES: ${{ secrets.COOKIES }}
+        COOKIE_SPLIT: ${{ secrets.COOKIE_SPLIT }}
         ROBOT: ${{ secrets.ROBOT }}
         ROBOT_KEY: ${{ secrets.ROBOT_KEY }}
     - uses: gautamkrishnar/keepalive-workflow@master # using the workflow with default settings
