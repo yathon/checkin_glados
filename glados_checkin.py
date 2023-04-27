@@ -4,7 +4,8 @@ import requests
 import time
 from RobotNotice import notice
 
-cookie = os.environ["COOKIE"]
+cookies = os.environ["COOKIES"]
+cookie_split = os.environ["COOKIE_SPLIT"]
 robot = os.environ["ROBOT"]
 robot_key = os.environ["ROBOT_KEY"]
 
@@ -34,7 +35,7 @@ GRACE_LIST = [
 ]
 
 
-def glados_checkin():
+def glados_checkin(cookie):
     # url_home = 'https://glados.rocks/console'
     url_checkin = "https://glados.rocks/api/user/checkin"
     url_status = "https://glados.rocks/api/user/status"
@@ -104,15 +105,17 @@ def glados_checkin():
 
 def main():
     info = 'Unknown Error, please checkin manual'
-    for _ in range(5):
-        try:
-            info = glados_checkin()
-            break
-        except Exception as e:
-            print(e)
-            info = str(e)
-    # print(info)
-    notice(f'[{robot_key}]{info}', robot)
+    for cookie in cookies.split(cookie_split):
+        for _ in range(5):
+            try:
+                info = glados_checkin(cookie)
+                break
+            except Exception as e:
+                print(e)
+                info = str(e)
+        # print(info)
+        notice(f'[{robot_key}]{info}', robot)
+        time.sleep(10)
 
 
 if __name__ == '__main__':
