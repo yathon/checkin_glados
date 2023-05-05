@@ -5,6 +5,6 @@ if [ -f requirements.txt ]; then
 fi
 
 for key in $( compgen -v ); do
-  echo "$key = $ { !key}"
-  export ${ key }=${ !key}
+  echo "$key = " $key
+  export ${ key }=$key
 done
