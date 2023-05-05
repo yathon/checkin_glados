@@ -1,4 +1,4 @@
-name: glados-auto-checkin
+name: python-daily-task
 
 on:
   workflow_dispatch: 
@@ -23,21 +23,18 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install Python
+    - name: Install Python3
       run: |
         sudo apt update && \
         sudo apt install python3
-      
-    - name: requirements
+
+    - name: Set env
       run: |
-        pip3 install -r requirements.txt
-       # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi 
-    - name: Checkin
+        source set-env.sh
+      env: ${{ secrets }}
+
+    - name: Do Task
       run: |
-        python3 glados_checkin.py 
-      env:
-        COOKIES: ${{ secrets.COOKIES }}
-        COOKIE_SPLIT: ${{ secrets.COOKIE_SPLIT }}
-        ROBOT: ${{ secrets.ROBOT }}
-        ROBOT_KEY: ${{ secrets.ROBOT_KEY }}
+        python3 main.py
+
     - uses: gautamkrishnar/keepalive-workflow@master # using the workflow with default settings

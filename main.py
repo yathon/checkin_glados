@@ -1,13 +1,19 @@
 # -*- coding: UTF-8 -*-
 import os
+import random
 import requests
 import time
 from RobotNotice import notice
 
-cookies = os.environ["COOKIES"]
-cookie_split = os.environ["COOKIE_SPLIT"]
-robot = os.environ["ROBOT"]
-robot_key = os.environ["ROBOT_KEY"]
+cookies = os.environ.get("COOKIES")
+cookie_split = os.environ.get("COOKIE_SPLIT")
+robot = os.environ.get("ROBOT")
+robot_key = os.environ.get("ROBOT_KEY")
+wait_to_next = os.environ.get("WAIT")
+try:
+    wait_to_next = min(max(int(wait_to_next), 5), 3600)
+except Exception:
+    wait_to_next = random.randint(10, 30)
 
 UNIT = 1024
 UNIT_B = 'B'
@@ -35,7 +41,7 @@ GRACE_LIST = [
 ]
 
 
-def glados_checkin(cookie):
+def checkin(cookie):
     # url_home = 'https://glados.rocks/console'
     url_checkin = "https://glados.rocks/api/user/checkin"
     url_status = "https://glados.rocks/api/user/status"
@@ -93,7 +99,6 @@ def glados_checkin(cookie):
                f'> 时间：{time.strftime("%Y-%m-%d %H:%M:%S")}\n' \
                f'> 项目：[GlaDOS]-[checkin]\n' \
                f'> 账号：{email}\n' \
-               f'> 套餐：Edu Plan [Basic]\n' \
                f'> 流量：30 GB.\n' \
                f'> 天数：{float(left_days):.0f}\n' \
                f'> 已用：{float(used_today):.2f} {unit}\n' \
@@ -105,17 +110,26 @@ def glados_checkin(cookie):
 
 def main():
     info = 'Unknown Error, please checkin manual'
-    for cookie in cookies.split(cookie_split):
+    if not cookies:
+        return
+    if cookie_split:
+        cookie_list = cookies.split(cookie_split)
+    else:
+        cookie_list = [cookies]
+    first = True
+    for cookie in cookie_list:
+        if not first:
+            time.sleep(wait_to_next)
         for _ in range(5):
             try:
-                info = glados_checkin(cookie)
+                info = checkin(cookie)
                 break
             except Exception as e:
                 print(e)
                 info = str(e)
         # print(info)
+        first = False
         notice(f'[{robot_key}]{info}', robot)
-        time.sleep(10)
 
 
 if __name__ == '__main__':

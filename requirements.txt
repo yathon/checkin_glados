@@ -1,2 +1,2 @@
 requests
-RobotNotice==0.0.2
+RobotNotice>=0.0.2
