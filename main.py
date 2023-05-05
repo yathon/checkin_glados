@@ -6,15 +6,10 @@ import time
 from RobotNotice import notice
 
 cookies = os.environ.get("COOKIES")
-print(cookies)
 cookie_split = os.environ.get("COOKIE_SPLIT")
-print(cookie_split)
 robot = os.environ.get("ROBOT")
-print(robot)
 robot_key = os.environ.get("ROBOT_KEY")
-print(robot_key)
 wait_to_next = os.environ.get("WAIT")
-print(wait_to_next)
 try:
     wait_to_next = min(max(int(wait_to_next), 5), 3600)
 except Exception:
