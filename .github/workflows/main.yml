@@ -7,19 +7,12 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    - cron:  0 9 * * * 
-      # 
-      # https://tool.lu/crontab/
-      # https://datetime360.com/cn/utc-cst-china-time/
-  #watch:
-  #    types: started   
+    - cron:  0 9 * * *
 
 jobs:
   daily-task:
     runs-on: ubuntu-latest
-    #if: github.event.repository.owner.id == github.event.sender.id
-    # https://p3terx.com/archives/github-actions-manual-trigger.html
-    
+
     steps:
     - uses: actions/checkout@v2
 
@@ -28,13 +21,10 @@ jobs:
         sudo apt update && \
         sudo apt install python3
 
-    - name: Set env
+    - name: Set env && Do Task
       run: |
-        bash set-env.sh
-      env: ${{ secrets }}
-
-    - name: Do Task
-      run: |
+        source set-env.sh
         python3 main.py
+      env: ${{ secrets }}
 
     - uses: gautamkrishnar/keepalive-workflow@master # using the workflow with default settings
