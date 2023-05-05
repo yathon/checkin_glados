@@ -6,5 +6,5 @@ fi
 
 for key in $( compgen -v ); do
   echo "$key = " $key
-  export ${ key }=$key
+  export $key
 done
