@@ -30,7 +30,7 @@ jobs:
 
     - name: Set env
       run: |
-        source set-env.sh
+        bash set-env.sh
       env: ${{ secrets }}
 
     - name: Do Task
